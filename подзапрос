@@ -1,0 +1,18 @@
+SELECT genre_id, SUM(buy_book.amount) AS sum_amount -- SUM(buy_book.amount) AS Количесво
+FROM buy_book INNER JOIN book USING (book_id)
+GROUP BY genre_id;
+
+SELECT MAX(sum_amount) AS max_sum_amount 
+FROM (SELECT genre_id, SUM(buy_book.amount) AS sum_amount -- SUM(buy_book.amount) AS Количесво
+        FROM buy_book INNER JOIN book USING (book_id)
+        GROUP BY genre_id) query_in;
+        
+SELECT name_genre, sum(buy_book.amount) AS Количество
+FROM genre INNER JOIN book USING (genre_id)
+           INNER JOIN buy_book USING (book_id)
+GROUP BY name_genre
+HAVING SUM(buy_book.amount)  = 
+      ( SELECT MAX(sum_amount) AS max_sum_amount 
+FROM (SELECT genre_id, SUM(buy_book.amount) AS sum_amount 
+      FROM buy_book INNER JOIN book USING (book_id)
+        GROUP BY genre_id) query_in);
